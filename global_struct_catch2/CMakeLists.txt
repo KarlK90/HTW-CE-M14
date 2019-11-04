@@ -1,5 +1,5 @@
 # Get the exercise name from the current directory
-get_filename_component(exercise ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+get_filename_component(exercise global_struct NAME)
 
 # Basic CMake project
 cmake_minimum_required(VERSION 3.5.1)
@@ -26,7 +26,7 @@ else()
 endif()
 
 set_target_properties(${exercise} PROPERTIES
-    CXX_STANDARD 17
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED OFF
     CXX_EXTENSIONS OFF
 )
