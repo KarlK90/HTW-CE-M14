@@ -5,7 +5,9 @@ get_filename_component(exercise global_struct NAME)
 cmake_minimum_required(VERSION 3.5.1)
 
 # Name the project after the exercise
-project(${exercise} CXX)
+project(${exercise} C CXX)
+
+enable_testing()
 
 # Get a source filename from the exercise name by replacing -'s with _'s
 string(REPLACE "-" "_" file ${exercise})
@@ -17,13 +19,9 @@ else()
     set(exercise_cpp "")
 endif()
 
-# Build from pre-compiled Catch2 main?
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test/tests-main.o)
-    add_executable(${exercise} ${file}_test.cpp ${exercise_cpp} ${file}.h test/tests-main.o)
-else()
-    # Build executable from sources and headers
-    add_executable(${exercise} ${file}_test.cpp ${exercise_cpp} ${file}.h test/tests-main.cpp)
-endif()
+# Build executable from sources and headers
+add_executable(${exercise} ${file}_test.cpp ${exercise_cpp} ${file}.h test/tests-main.cpp)
+add_test(${exercise} test)
 
 set_target_properties(${exercise} PROPERTIES
     CXX_STANDARD 20
