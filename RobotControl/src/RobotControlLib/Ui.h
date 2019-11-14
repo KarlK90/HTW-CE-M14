@@ -2,8 +2,8 @@
 
 #include "RobotControl.h"
 #include <deque>
-#include <vector>
 #include <string>
+#include <vector>
 
 class Ui {
 public:

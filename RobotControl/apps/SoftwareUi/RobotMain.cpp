@@ -1,11 +1,11 @@
-// dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
+// dear imgui-bindings: standalone example application for GLFW + OpenGL 3, using programmable pipeline
+// If you are new to dear imgui-bindings, see examples/README.txt and documentation at the top of imgui-bindings.cpp.
 // (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
 
 // clang-format off
 #include "imgui.h"
-#include "bindings/imgui_impl_opengl3.h"
-#include "bindings/imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
 // clang-format on
 #include <cstdio>
 
@@ -33,10 +33,10 @@
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
-#include "RobotControl.h"
+#include "../../src/RobotControlLib/RobotControl.h"
 #include "RobotInput.h"
 #include "RobotOutput.h"
-#include "RobotSimulate.h"
+#include "../../src/RobotSimulateLib/RobotSimulate.h"
 
 ui_in_struct ui_in;
 ui_out_struct ui_out;
@@ -45,6 +45,7 @@ robot_out_struct robot_out;
 
 bool is_running = true;
 
+void render_ui();
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -112,33 +113,12 @@ int main(int, char**)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'misc/fonts/README.txt' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
-
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     //reset();
     // Main loop
     while (!glfwWindowShouldClose(window)) {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-        //io.WantCaptureKeyboard = true;
         glfwPollEvents();
 
         // Start the Dear ImGui frame
@@ -146,47 +126,21 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        //control();
-        //process_output();
-
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        //if (show_demo_window)
-        //ImGui::ShowDemoWindow();
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        //    {
-        //      static float f = 0.0f;
-        //      static int counter = 0;
-        //
-        //      ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-        //
-        //      ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-        //      ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-        //      ImGui::Checkbox("Another Window", &show_another_window);
-        //
-        //      ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        //      ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-        //
-        //      if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-        //        counter++;
-        //      ImGui::SameLine();
-        //      ImGui::Text("counter = %d", counter);
-        //
-        //      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        //      ImGui::End();
-        //    }
-
+        ImGui::SetNextWindowPos(ImVec2(0,0));
+        ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
         ImGui::Begin("CE M14 Roboter Simulation v.Funky Shit"); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
         process_input(io.KeysDown);
 
         if (is_running) {
             control();
             process_output();
+            render_ui();
             if (step_size > 0) {
                 simulate_robot();
                 step_size = 0;
             }
         }
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
 
         // Rendering
@@ -212,20 +166,110 @@ int main(int, char**)
     return 0;
 }
 
-//int main() {
-//  while (!reset()) {
-//  }
-//
-//  // run control loop while is_running is true
-//  while (is_running) {
-//    process_input();
-//    control();
-//    process_output();
-//    if (step_size > 0) {
-//      simulate_robot();
-//      step_size = 0;
-//    }
-//  }
-//
-//  return 0;
-//}
+void render_ui()
+{
+    auto colored_text_by_flag = [](const char* fmt, bool flag) {
+        if (flag) {
+            ImGui::TextColored(ImColor(0.0f, 1.0f, 0.0f, 1.0f), "%s", fmt);
+        } else {
+            ImGui::TextDisabled("%s", fmt);
+        }
+    };
+
+    if (ImGui::CollapsingHeader("User Input", ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::Columns(2);
+        colored_text_by_flag("Left", ui_in.left);
+        ImGui::NextColumn();
+        colored_text_by_flag("Right", ui_in.right);
+        ImGui::NextColumn();
+        colored_text_by_flag("Up", ui_in.up);
+        ImGui::NextColumn();
+        colored_text_by_flag("Down", ui_in.down);
+        ImGui::NextColumn();
+        colored_text_by_flag("Forward", ui_in.fwd);
+        ImGui::NextColumn();
+        colored_text_by_flag("Back", ui_in.back);
+        ImGui::NextColumn();
+        colored_text_by_flag("Open", ui_in.open);
+        ImGui::NextColumn();
+        colored_text_by_flag("Close", ui_in.close);
+        ImGui::NextColumn();
+        colored_text_by_flag("Mode 1", ui_in.mode1);
+        ImGui::NextColumn();
+        colored_text_by_flag("Mode 2", ui_in.mode2);
+        ImGui::Columns(1);
+    }
+
+    if (ImGui::CollapsingHeader("User Output", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::TreeNodeEx("Status Display", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Text("%s", ui_out.line1.c_str());
+            ImGui::TextColored(ImColor(1.0f, 0.0f, 0.0f, 1.0f), "%s", ui_out.line2.c_str());
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNodeEx("Status Leds", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Columns(3);
+            colored_text_by_flag("Ready", ui_out.op_led);
+            ImGui::NextColumn();
+            colored_text_by_flag("Failure", ui_out.failure_led);
+            ImGui::NextColumn();
+            colored_text_by_flag("Operating", ui_out.ready_led);
+            ImGui::Columns(1);
+            ImGui::TreePop();
+        }
+    }
+
+    if (ImGui::CollapsingHeader("Robot Input", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::TreeNodeEx("Deltas", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Columns(4);
+            ImGui::Text("Left-Right");
+            ImGui::NextColumn();
+            ImGui::Text("%i", robot_in.delta_left_right);
+            ImGui::NextColumn();
+            ImGui::Text("Up-Down");
+            ImGui::NextColumn();
+            ImGui::Text("%i", robot_in.delta_up_down);
+            ImGui::NextColumn();
+            ImGui::Text("Forward-Back");
+            ImGui::NextColumn();
+            ImGui::Text("%i", robot_in.delta_fdw_back);
+            ImGui::NextColumn();
+            ImGui::Text("Open-Close");
+            ImGui::NextColumn();
+            ImGui::Text("%i", robot_in.delta_open_close);
+            ImGui::Columns(1);
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNodeEx("Limit Switches", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Columns(4);
+            colored_text_by_flag("Left", robot_in.limit_left);
+            ImGui::NextColumn();
+            colored_text_by_flag("Down", robot_in.limit_down);
+            ImGui::NextColumn();
+            colored_text_by_flag("Back", robot_in.limit_back);
+            ImGui::NextColumn();
+            colored_text_by_flag("Close", robot_in.limit_close);
+            ImGui::Columns(1);
+            ImGui::TreePop();
+        }
+    }
+
+    if (ImGui::CollapsingHeader("Robot Output", ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::Columns(2);
+        colored_text_by_flag("Direction Left", robot_out.motor_dir_left);
+        ImGui::NextColumn();
+        colored_text_by_flag("Power Left-Right", robot_out.motor_left_right);
+        ImGui::NextColumn();
+        colored_text_by_flag("Direction Up", robot_out.motor_dir_up);
+        ImGui::NextColumn();
+        colored_text_by_flag("Power Up-Down", robot_out.motor_up_down);
+        ImGui::NextColumn();
+        colored_text_by_flag("Direction Forward", robot_out.motor_dir_fwd);
+        ImGui::NextColumn();
+        colored_text_by_flag("Power Forward-Back", robot_out.motor_fwd_back);
+        ImGui::NextColumn();
+        colored_text_by_flag("Direction Close", robot_out.motor_dir_close);
+        ImGui::NextColumn();
+        colored_text_by_flag("Power Open-Close", robot_out.motor_open_close);
+        ImGui::Columns(1);
+    }
+}

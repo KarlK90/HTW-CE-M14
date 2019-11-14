@@ -2,12 +2,13 @@
 imgui/1.73@bincrafters/stable
 glfw/3.2.1@bincrafters/stable
 glew/2.1.0@bincrafters/stable
+gtest/1.10.0
 
 [generators]
 cmake_find_package_multi
 
 [imports]
-./misc/bindings, imgui_impl_glfw.cpp -> ../bindings
-./misc/bindings, imgui_impl_opengl3.cpp -> ../bindings
-./misc/bindings, imgui_impl_glfw.h -> ../bindings
-./misc/bindings, imgui_impl_opengl3.h -> ../bindings
+./misc/bindings, imgui_impl_glfw.cpp -> ../external/imgui-bindings
+./misc/bindings, imgui_impl_opengl3.cpp -> ../external/imgui-bindings
+./misc/bindings, imgui_impl_glfw.h -> ../external/imgui-bindings
+./misc/bindings, imgui_impl_opengl3.h -> ../external/imgui-bindings

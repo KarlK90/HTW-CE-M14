@@ -1,6 +1,6 @@
 #pragma once
-#include "RobotControl.h"
 #include "Axis.h"
+#include "RobotControl.h"
 
 class Robot {
   const std::int32_t limit_right = 9000;

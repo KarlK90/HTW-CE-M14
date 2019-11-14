@@ -1,4 +1,3 @@
-#include "RobotControl.h"
 #include "RobotSimulate.h"
 
 // step_size defines how many steps the motor turns in one cycle

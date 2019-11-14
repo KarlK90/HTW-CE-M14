@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13)
 
 project(RobotControl)
 
@@ -14,29 +14,18 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(imgui CONFIG)
 find_package(glfw CONFIG)
 find_package(glew CONFIG)
+find_package(gtest CONFIG)
 
-set(ROBOT_UI_SOURCES
-        RobotMain.cpp
-        bindings/imgui_impl_glfw.cpp
-        bindings/imgui_impl_opengl3.cpp
-        RobotControl.cpp
-        RobotInput.cpp
-        RobotOutput.cpp
-        RobotSimulate.cpp
-        Axis.cpp
-        Robot.cpp
-        Ui.cpp
-        )
+# Dependencies
+add_subdirectory(external/imgui-bindings)
 
-set(ROBOT_UI_HEADERS
-        bindings/imgui_impl_glfw.h
-        bindings/imgui_impl_opengl3.h
-        Axis.h
-        Robot.h
-        Ui.h
-        )
+# Libaries
+add_subdirectory(src/RobotControlLib)
+add_subdirectory(src/RobotSimulateLib)
 
-add_executable(RobotUi ${ROBOT_UI_SOURCES} ${ROBOT_UI_HEADERS})
+# Application
+add_subdirectory(apps/SoftwareUi)
 
-target_compile_definitions(RobotUi PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
-target_link_libraries(RobotUi imgui::imgui glfw::glfw glew::glew)
+# Unit Tests
+enable_testing()
+add_subdirectory(tests/RobotControlLibTest)

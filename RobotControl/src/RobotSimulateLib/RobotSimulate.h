@@ -1,4 +1,5 @@
 #pragma once
+#include "../RobotControlLib/RobotControl.h"
 
 class axis_class
 {
