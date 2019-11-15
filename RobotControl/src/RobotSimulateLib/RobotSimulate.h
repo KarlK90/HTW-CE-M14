@@ -1,23 +1,23 @@
 #pragma once
-#include "../RobotControlLib/RobotControl.h"
+#include "RobotControl.h"
 
-class axis_class
-{
+class axis_class {
 public:
-	void perform_step(const bool motor_powered, const bool dir, bool& limit_switch, int& counter_inc);
+    void perform_step(const bool motor_powered, const bool dir, bool& limit_switch, int& counter_inc);
+
 private:
-	int pos = 0;
+    int pos = 0;
 };
 
-class robot_class
-{
+class robot_class {
 public:
-	void perform_step(const robot_out_struct robot_out, robot_in_struct& robot_in);
+    void perform_step(const robot_out_struct robot_out, robot_in_struct& robot_in);
+
 private:
-	axis_class left_right;
-	axis_class up_down;
-	axis_class fwd_back;
-	axis_class open_close;
+    axis_class left_right;
+    axis_class up_down;
+    axis_class fwd_back;
+    axis_class open_close;
 };
 
 extern int step_size;

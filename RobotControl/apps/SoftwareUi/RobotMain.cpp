@@ -33,10 +33,10 @@
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
-#include "../../src/RobotControlLib/RobotControl.h"
+#include "RobotControl.h"
 #include "RobotInput.h"
 #include "RobotOutput.h"
-#include "../../src/RobotSimulateLib/RobotSimulate.h"
+#include "RobotSimulate.h"
 
 ui_in_struct ui_in;
 ui_out_struct ui_out;
@@ -126,7 +126,7 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::SetNextWindowPos(ImVec2(0,0));
+        ImGui::SetNextWindowPos(ImVec2(0, 0));
         ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
         ImGui::Begin("CE M14 Roboter Simulation v.Funky Shit"); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
         process_input(io.KeysDown);

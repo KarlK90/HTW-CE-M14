@@ -5,5 +5,4 @@ using namespace std;
 
 void process_output()
 {
-
 }
