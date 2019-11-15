@@ -198,6 +198,15 @@ void render_ui()
         ImGui::NextColumn();
         colored_text_by_flag("Mode 2", ui_in.mode2);
         ImGui::Columns(1);
+        if (ImGui::TreeNode("Keybindings")) {
+            ImGui::BulletText("Up/Down: Up/Down Arrows");
+            ImGui::BulletText("Left/Right: Left/Right Arrows");
+            ImGui::BulletText("Forward/Back: W/S");
+            ImGui::BulletText("Open/Close: A/D");
+            ImGui::BulletText("Mode 1: 1");
+            ImGui::BulletText("Mode 2: 2");
+            ImGui::TreePop();
+        }
     }
 
     if (ImGui::CollapsingHeader("User Output", ImGuiTreeNodeFlags_DefaultOpen)) {
