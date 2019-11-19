@@ -128,7 +128,7 @@ int main(int, char**)
 
         ImGui::SetNextWindowPos(ImVec2(0, 0));
         ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
-        ImGui::Begin("CE M14 Roboter Simulation v.Funky Shit"); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+        ImGui::Begin("CE M14 Roboter Simulation v.1");
         process_input(io.KeysDown);
 
         if (is_running) {
